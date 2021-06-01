@@ -1,5 +1,8 @@
-# typedframe
-Typed Wrappers over Pandas DataFrames with schema validation.
+# 🐍 typedframe
+
+**Typed wrappers over pandas DataFrames with schema validation.**
+
+`TypedDataFrame` is a lightweight wrapper over `pandas.DataFrame` that provides runtime schema validation and can be used to establish strong data contracts between interfaces in your Python source code.
 
 ```python
     >>> from typedframe import TypedDataFrame
