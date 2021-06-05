@@ -2,7 +2,7 @@
 
 **Typed wrappers over pandas DataFrames with schema validation.**
 
-`TypedDataFrame` is a lightweight wrapper over `pandas.DataFrame` that provides runtime schema validation and can be used to establish strong data contracts between interfaces in your Python source code.
+`TypedDataFrame` is a lightweight wrapper over `pandas.DataFrame` that provides runtime schema validation and can be used to establish strong data contracts between interfaces in your Python code.
 
 ```python
     >>> from typedframe import TypedDataFrame
@@ -21,3 +21,15 @@
     >>> df.col3 = df.col3.astype("category")
     >>> print(MyTable(df).df)
 ```
+
+
+## Supported Data Types
+
+- Integers: `np.int16`, `np.int32`, `np.int64`, etc.
+- Floats: `np.float16`, `np.float32`, `np.float64`, etc.
+- Boolean: `bool`
+- String: `STRING_DTYPE`
+- Python object: `object`
+- Categorical: `category`
+- Date, Datetime: `DATE_TIME_DTYPE`
+

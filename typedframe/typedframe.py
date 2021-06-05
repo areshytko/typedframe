@@ -11,6 +11,16 @@ try:
 except ImportError:
     from pandas.types.dtypes import CategoricalDtype
 
+"""
+dtype for datetime column
+"""
+DATE_TIME_DTYPE = np.dtype('datetime64[ns]')
+
+"""
+dtype for string column
+"""
+STRING_DTYPE = object
+
 
 class TypedDataFrame:
     """
@@ -28,13 +38,13 @@ class TypedDataFrame:
 
     >>> class MyTable(TypedDataFrame):
     ...    schema = {
-    ...        "col1": object, # str
+    ...        "col1": STRING_DTYPE,
     ...        "col2": np.int32,
     ...        "col3": 'category'
     ...    }
     ...    optional = {
     ...        "col4": bool,
-               "col5": np.dtype('datetime64[ns]')
+               "col5": DATE_TIME_DTYPE
     ...    }
 
     >>> df = pd.DataFrame({"col1": ['foo'], "col2": np.array([1], dtype=np.int32), "col3": ['bar']})
@@ -43,6 +53,8 @@ class TypedDataFrame:
     """
 
     schema = {}
+
+    index_schema = ('index', None)
 
     optional = {}
 
@@ -62,7 +74,7 @@ class TypedDataFrame:
         ...    }
         ...    optional = {
         ...        "col4": bool,
-                   "col5": np.dtype('datetime64[ns]')
+                   "col5": DATE_TIME_DTYPE
         ...    }
 
         >>> df = pd.DataFrame({"col1": ['foo'], "col2": [1], "col3": ['bar']})
@@ -72,10 +84,14 @@ class TypedDataFrame:
         expected = cls.dtype()
         for col in df.columns:
             if col in expected:
-                if expected[col] == np.dtype('datetime64[ns]'):
+                if expected[col] == DATE_TIME_DTYPE:
                     df[col] = pd.to_datetime(df[col])
                 else:
                     df[col] = df[col].astype(expected[col])
+        
+        if cls.index_schema[1]:
+            df.index = df.index.astype(cls.index_schema[1])
+            df.index.name = cls.index_schema[0]
 
         return cls(df)
 
@@ -89,6 +105,9 @@ class TypedDataFrame:
                             for cls in cls.__mro__[:-1])))
 
     def __init__(self, df: pd.DataFrame):
+
+        if not isinstance(df, pd.DataFrame):
+            raise AssertionError(f"Input argument of type {type(df)} is not an instance of pandas DataFrame")
 
         actual_dtypes = {item[0]: _normalize_dtype(item[1])
                          for item in df.dtypes.to_dict().items()}
@@ -109,6 +128,14 @@ class TypedDataFrame:
                     diff.add((col, dtype))
             except TypeError:
                 diff.add((col, dtype))
+        
+        if self.index_schema[1]:
+            actual_index = _normalize_dtype(df.index.dtype)
+            if df.index.name != self.index_schema[0]:
+                diff.add(f"expected index name {self.index_schema[0]}, actual index name {df.index.name}")
+            if actual_index != self.index_schema[1]:
+                diff.add(f"expected index dtype {self.index_schema[1]}, actual index dtype {actual_index}")
+
 
         if diff:
             raise AssertionError(
