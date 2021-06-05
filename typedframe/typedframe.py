@@ -54,7 +54,7 @@ class TypedDataFrame:
 
     schema = {}
 
-    index_schema = ('index', None)
+    index_schema = (None, None)  # (name, dtype)
 
     optional = {}
 
