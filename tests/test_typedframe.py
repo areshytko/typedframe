@@ -43,7 +43,7 @@ class IndexDataFrame(TypedDataFrame):
         'foo': bool
     }
 
-    index_schema = ('bar', STRING_DTYPE)
+    index_schema = ('bar', DATE_TIME_DTYPE)
 
 
 class ChildIndexDataFrame(IndexDataFrame):
@@ -53,7 +53,7 @@ class ChildIndexDataFrame(IndexDataFrame):
 
 def test_index_success_case():
     df = pd.DataFrame({'foo': [True, False]})
-    df.index = pd.Series([datetime.date.today(), datetime.date(2021, 5, 31)], name='bar')
+    df.index = pd.to_datetime(pd.Series([datetime.date.today(), datetime.date(2021, 5, 31)], name='bar'))
     _ = IndexDataFrame(df)
     _ = ChildIndexDataFrame(df)
 
@@ -62,6 +62,11 @@ def test_index_fail_case():
     df = pd.DataFrame({'foo': [True, False]})
     with pytest.raises(AssertionError):
         _ = IndexDataFrame(df)
+
+def test_index_convert_success_case():
+    df = pd.DataFrame({'foo': [True, False]})
+    df.index = pd.Series(['2021-06-03', '2021-05-31'])
+    _ = IndexDataFrame.convert(df)
 
 
 def test_base_success_case():
