@@ -33,11 +33,6 @@ class DataFrameWithOptional(TypedDataFrame):
     }
 
 
-class CategoricalDataFrame(TypedDataFrame):
-    schema = {
-        'categorical_col': 'category'
-    }
-
 class IndexDataFrame(TypedDataFrame):
     schema = {
         'foo': bool
@@ -73,3 +68,33 @@ def test_base_success_case():
     df = pd.DataFrame({
         
     })
+
+
+class CategoricalFrame(TypedDataFrame):
+    schema = {
+        'col': ('foo', 'bar')
+    }
+
+def test_categorical_success_1():
+    df = pd.DataFrame({'col': ['foo', 'foo', 'bar']})
+    df.col = pd.Categorical(df.col, categories=('foo', 'bar'), ordered=True)
+    _ = CategoricalFrame(df)
+
+
+def test_categorical_success_2():
+    df = pd.DataFrame({'col': ['foo', 'foo']})
+    df.col = pd.Categorical(df.col, categories=('foo', 'bar'), ordered=True)
+    _ = CategoricalFrame(df)
+
+
+def test_categorical_failure_1():
+    df = pd.DataFrame({'col': ['foo', 'foo']})
+    df.col = pd.Categorical(df.col, categories=('foo', 'bar', 'buzz'), ordered=True)
+    with pytest.raises(AssertionError):
+        _ = CategoricalFrame(df)
+
+
+def test_categorical_failure_3():
+    df = pd.DataFrame({'col': ['foo', 'foo']})
+    with pytest.raises(AssertionError):
+        _ = CategoricalFrame(df)

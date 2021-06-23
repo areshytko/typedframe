@@ -36,11 +36,12 @@ class TypedDataFrame:
     Examples
     --------
 
+    >>> from typedframe import TypedDataFrame, DATE_TIME_DTYPE
     >>> class MyTable(TypedDataFrame):
     ...    schema = {
-    ...        "col1": STRING_DTYPE,
+    ...        "col1": object, # str
     ...        "col2": np.int32,
-    ...        "col3": 'category'
+    ...        "col3": ('foo', 'bar')
     ...    }
     ...    optional = {
     ...        "col4": bool,
@@ -48,7 +49,7 @@ class TypedDataFrame:
     ...    }
 
     >>> df = pd.DataFrame({"col1": ['foo'], "col2": np.array([1], dtype=np.int32), "col3": ['bar']})
-    >>> df.col3 = df.col3.astype("category")
+    >>> df.col3 = pd.Categorical(df.col3, categories=('foo', 'bar'), ordered=True)
     >>> print(MyTable(df).df)
     """
 
@@ -66,18 +67,20 @@ class TypedDataFrame:
         Examples
         --------
 
+        >>> from typedframe import TypedDataFrame, DATE_TIME_DTYPE
         >>> class MyTable(TypedDataFrame):
         ...    schema = {
         ...        "col1": object, # str
         ...        "col2": np.int32,
-        ...        "col3": 'category'
+        ...        "col3": ('foo', 'bar')
         ...    }
         ...    optional = {
         ...        "col4": bool,
-                   "col5": DATE_TIME_DTYPE
+                "col5": DATE_TIME_DTYPE
         ...    }
 
-        >>> df = pd.DataFrame({"col1": ['foo'], "col2": [1], "col3": ['bar']})
+        >>> df = pd.DataFrame({"col1": ['foo'], "col2": np.array([1], dtype=np.int32), "col3": ['bar']})
+        >>> df.col3 = pd.Categorical(df.col3, categories=('foo', 'bar'), ordered=True)
         >>> print(MyTable.convert(df).df)
         """
         df = df.copy()
@@ -154,6 +157,6 @@ class TypedDataFrame:
 
 def _normalize_dtype(dtype):
     if isinstance(dtype, CategoricalDtype):
-        return 'category'
+        return tuple(dtype.categories)
     else:
         return dtype

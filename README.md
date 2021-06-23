@@ -5,20 +5,20 @@
 `TypedDataFrame` is a lightweight wrapper over `pandas.DataFrame` that provides runtime schema validation and can be used to establish strong data contracts between interfaces in your Python code.
 
 ```python
-    >>> from typedframe import TypedDataFrame
+    >>> from typedframe import TypedDataFrame, DATE_TIME_DTYPE
     >>> class MyTable(TypedDataFrame):
     ...    schema = {
     ...        "col1": object, # str
     ...        "col2": np.int32,
-    ...        "col3": 'category'
+    ...        "col3": ('foo', 'bar')
     ...    }
     ...    optional = {
     ...        "col4": bool,
-               "col5": np.dtype('datetime64[ns]')
+               "col5": DATE_TIME_DTYPE
     ...    }
 
     >>> df = pd.DataFrame({"col1": ['foo'], "col2": np.array([1], dtype=np.int32), "col3": ['bar']})
-    >>> df.col3 = df.col3.astype("category")
+    >>> df.col3 = pd.Categorical(df.col3, categories=('foo', 'bar'), ordered=True)
     >>> print(MyTable(df).df)
 ```
 
