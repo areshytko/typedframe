@@ -87,7 +87,9 @@ class TypedDataFrame:
         expected = cls.dtype()
         for col in df.columns:
             if col in expected:
-                if expected[col] == DATE_TIME_DTYPE:
+                if isinstance(expected[col], tuple):
+                    df[col] = pd.Categorical(df[col], categories=expected[col], ordered=True)
+                elif expected[col] == DATE_TIME_DTYPE:
                     df[col] = pd.to_datetime(df[col])
                 else:
                     df[col] = df[col].astype(expected[col])
