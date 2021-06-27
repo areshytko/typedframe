@@ -88,6 +88,10 @@ class TypedDataFrame:
         for col in df.columns:
             if col in expected:
                 if isinstance(expected[col], tuple):
+                    actual_cats = set(df[col].unique())
+                    categories_diff = actual_cats.difference(set(expected[col]))
+                    if categories_diff:
+                        raise AssertionError(f"For column: {col} there are unknown categories: {categories_diff}")
                     df[col] = pd.Categorical(df[col], categories=expected[col], ordered=True)
                 elif expected[col] == DATE_TIME_DTYPE:
                     df[col] = pd.to_datetime(df[col])

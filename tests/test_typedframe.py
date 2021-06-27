@@ -103,3 +103,9 @@ def test_categorical_failure_3():
 def test_convert_categorical():
     df = pd.DataFrame({'col': ['foo', 'foo']})
     _ = CategoricalFrame.convert(df)
+
+
+def test_convert_categorical_failure():
+    df = pd.DataFrame({'col': ['foo', 'buzz']})
+    with pytest.raises(AssertionError):
+        _ = CategoricalFrame.convert(df)
