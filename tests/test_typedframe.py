@@ -1,7 +1,9 @@
 
+import abc
+import datetime
+
 import pandas as pd
 import numpy as np
-import datetime
 
 import pytest
 
@@ -109,3 +111,71 @@ def test_convert_categorical_failure():
     df = pd.DataFrame({'col': ['foo', 'buzz']})
     with pytest.raises(AssertionError):
         _ = CategoricalFrame.convert(df)
+
+
+class PingInterface(metaclass=abc.ABCMeta):
+
+    @abc.abstractmethod
+    def ping(self):
+        pass
+
+class Parent(TypedDataFrame):
+    schema = {
+    'foo': bool
+    }
+
+class Child(Parent, PingInterface):
+    
+    schema={
+    'bar': bool
+    }
+
+    def ping():
+        print("ping")
+
+
+def test_multiple_inheritance_1_success():
+    _ = Child(pd.DataFrame({'foo': [True], 'bar': [False]}))
+
+
+def test_multiple_inheritance_1_failure():
+    with pytest.raises(AssertionError):
+        _ = Child(pd.DataFrame({'bar': [False]}))
+
+
+class Root(TypedDataFrame):
+    
+    schema = {
+    'root': bool
+    }
+
+
+class Left(Root):
+    schema = {
+    'left': bool
+    }
+
+
+class Right(Root):
+    schema = {
+    'root': STRING_DTYPE,
+    'right': bool
+    }
+
+
+class Down(Left, Right):
+    pass
+
+
+def test_multiple_inheritance_2_success():
+    _ = Down(pd.DataFrame({'root': [True], 'left': [True], 'right': [True]}))
+
+
+def test_multiple_inheritance_2_failure():
+    with pytest.raises(AssertionError):
+        _ = Down(pd.DataFrame({'root': [True], 'left': [True]}))
+
+
+def test_multiple_inheritance_2_failure_with_root_overwrite():
+    with pytest.raises(AssertionError):
+        _ = Down(pd.DataFrame({'root': [True], 'left': [True], 'right': ['string']}))

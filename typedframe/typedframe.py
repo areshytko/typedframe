@@ -111,7 +111,7 @@ class TypedDataFrame:
         """
         return dict(chain(*(chain(cls.schema.items(), cls.optional.items())
                             if with_optional else cls.schema.items()
-                            for cls in cls.__mro__[:-1])))
+                            for cls in cls.__mro__[:-1] if hasattr(cls, 'schema'))))
 
     def __init__(self, df: pd.DataFrame):
 
@@ -157,7 +157,7 @@ class TypedDataFrame:
         assert all(object == c.values.categories.dtype for c in categoricals), msg
 
         addon = {col: dtype for col, dtype in self.dtype().items() if col not in df.columns}
-        self.df = df if len(addon) == 0 else pd.concat(
+        self.df: pd.DataFrame = df if len(addon) == 0 else pd.concat(
             [df, pd.DataFrame(columns=addon.keys()).astype(addon)], axis=1)
 
 
