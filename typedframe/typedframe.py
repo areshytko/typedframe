@@ -2,6 +2,7 @@
 Basic classes for typed wrappers over pandas dataframes
 """
 from itertools import chain
+import pytz
 
 import numpy as np
 import pandas as pd
@@ -15,6 +16,7 @@ except ImportError:
 dtype for datetime column
 """
 DATE_TIME_DTYPE = np.dtype('datetime64[ns]')
+UTC_DATE_TIME_DTYPE = pd.DatetimeTZDtype('ns', pytz.UTC)
 
 """
 dtype for string column
@@ -95,6 +97,8 @@ class TypedDataFrame:
                     df[col] = pd.Categorical(df[col], categories=expected[col], ordered=True)
                 elif expected[col] == DATE_TIME_DTYPE:
                     df[col] = pd.to_datetime(df[col])
+                elif expected[col] == UTC_DATE_TIME_DTYPE:
+                    df[col] = pd.to_datetime(df[col], utc=True)
                 else:
                     df[col] = df[col].astype(expected[col])
         

@@ -1,6 +1,7 @@
 
 import abc
 import datetime
+from typedframe.typedframe import UTC_DATE_TIME_DTYPE
 
 import pandas as pd
 import numpy as np
@@ -47,6 +48,29 @@ class ChildIndexDataFrame(IndexDataFrame):
     pass
 
 
+class UTCDateTimeDataframe(TypedDataFrame):
+    schema = {
+        'date_field': UTC_DATE_TIME_DTYPE
+    }
+
+
+def test_utc_datetime_success_case():
+    df = pd.DataFrame({'date_field': [datetime.date.today(), datetime.date(2021, 5, 31)]})
+    df.date_field = pd.to_datetime(df.date_field, utc=True)
+    _ = UTCDateTimeDataframe(df)
+
+
+def test_utc_datetime_error_case():
+    df = pd.DataFrame({'date_field': [datetime.date.today(), datetime.date(2021, 5, 31)]})
+    df.date_field = pd.to_datetime(df.date_field)
+    with pytest.raises(AssertionError):
+        _ = UTCDateTimeDataframe(df)
+
+
+def test_utc_datetime_convert_case():
+    df = pd.DataFrame({'date_field': [datetime.date.today(), datetime.date(2021, 5, 31)]})
+    _ = UTCDateTimeDataframe.convert(df)
+
 
 def test_index_success_case():
     df = pd.DataFrame({'foo': [True, False]})
@@ -59,6 +83,7 @@ def test_index_fail_case():
     df = pd.DataFrame({'foo': [True, False]})
     with pytest.raises(AssertionError):
         _ = IndexDataFrame(df)
+
 
 def test_index_convert_success_case():
     df = pd.DataFrame({'foo': [True, False]})
