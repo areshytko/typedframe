@@ -146,7 +146,10 @@ class TypedDataFrame:
             actual_index = _normalize_dtype(df.index.dtype)
             if df.index.name != self.index_schema[0]:
                 diff.add(f"expected index name {self.index_schema[0]}, actual index name {df.index.name}")
-            if actual_index != self.index_schema[1]:
+            try:
+                if actual_index != self.index_schema[1]:
+                    diff.add(f"expected index dtype {self.index_schema[1]}, actual index dtype {actual_index}")
+            except TypeError:
                 diff.add(f"expected index dtype {self.index_schema[1]}, actual index dtype {actual_index}")
 
 
