@@ -8,7 +8,7 @@ import numpy as np
 
 import pytest
 
-from typedframe import TypedDataFrame, DATE_TIME_DTYPE, STRING_DTYPE
+from typedframe import TypedDataFrame, DATE_TIME_DTYPE
 
 
 class MyDataFrame(TypedDataFrame):
@@ -16,8 +16,8 @@ class MyDataFrame(TypedDataFrame):
         'int_field': np.int16,
         'float_field': np.float64,
         'bool_field': bool,
-        'str_field': STRING_DTYPE,
-        'date_field': DATE_TIME_DTYPE
+        'str_field': str,
+        'obj_field': object
     }
 
 
@@ -93,8 +93,14 @@ def test_index_convert_success_case():
 
 def test_base_success_case():
     df = pd.DataFrame({
-        
+        'int_field': np.int16([1, 2]),
+        'float_field': np.float64([0.1, 0.2]),
+        'bool_field': [True, False],
+        'str_field': ["one", "two"],
+        'obj_field': ["", ""],
+        'new_field': np.int64([10, 20])
     })
+    _ = InheritedDataFrame(df)
 
 
 class CategoricalFrame(TypedDataFrame):
@@ -183,7 +189,7 @@ class Left(Root):
 
 class Right(Root):
     schema = {
-    'root': STRING_DTYPE,
+    'root': object,
     'right': bool
     }
 

@@ -18,11 +18,6 @@ dtype for datetime column
 DATE_TIME_DTYPE = np.dtype('datetime64[ns]')
 UTC_DATE_TIME_DTYPE = pd.DatetimeTZDtype('ns', pytz.UTC)
 
-"""
-dtype for string column
-"""
-STRING_DTYPE = object
-
 
 class TypedDataFrame:
     """
@@ -41,7 +36,7 @@ class TypedDataFrame:
     >>> from typedframe import TypedDataFrame, DATE_TIME_DTYPE
     >>> class MyTable(TypedDataFrame):
     ...    schema = {
-    ...        "col1": object, # str
+    ...        "col1": str,
     ...        "col2": np.int32,
     ...        "col3": ('foo', 'bar')
     ...    }
@@ -122,14 +117,13 @@ class TypedDataFrame:
         if not isinstance(df, pd.DataFrame):
             raise AssertionError(f"Input argument of type {type(df)} is not an instance of pandas DataFrame")
 
-        actual_dtypes = {item[0]: _normalize_dtype(item[1])
-                         for item in df.dtypes.to_dict().items()}
+        actual_dtypes = df.dtypes.to_dict()
         expected = self.dtype(with_optional=False).items()
 
         diff = set()
         for col, dtype in expected:
             try:
-                if col not in actual_dtypes or dtype != actual_dtypes[col]:
+                if col not in actual_dtypes or _dtypes_dismatch(actual_dtypes[col], dtype):
                     diff.add((col, dtype))
             except TypeError:
                 diff.add((col, dtype))
@@ -137,26 +131,26 @@ class TypedDataFrame:
         optional = self.dtype().items()
         for col, dtype in optional:
             try:
-                if col in actual_dtypes and dtype != actual_dtypes[col]:
+                if col in actual_dtypes and _dtypes_dismatch(actual_dtypes[col], dtype):
                     diff.add((col, dtype))
             except TypeError:
                 diff.add((col, dtype))
         
         if self.index_schema[1]:
-            actual_index = _normalize_dtype(df.index.dtype)
             if df.index.name != self.index_schema[0]:
                 diff.add(f"expected index name {self.index_schema[0]}, actual index name {df.index.name}")
             try:
-                if actual_index != self.index_schema[1]:
-                    diff.add(f"expected index dtype {self.index_schema[1]}, actual index dtype {actual_index}")
+                if _dtypes_dismatch(df.index.dtype, self.index_schema[1]):
+                    diff.add(f"expected index dtype {self.index_schema[1]}, actual index dtype {df.index.dtype}")
             except TypeError:
-                diff.add(f"expected index dtype {self.index_schema[1]}, actual index dtype {actual_index}")
-
+                diff.add(f"expected index dtype {self.index_schema[1]}, actual index dtype {df.index.dtype}")
 
         if diff:
+            actual = {key: _normalize_actual_dtype(value) for key, value in df.dtypes.to_dict().items()}
+            expected = {key: _normalize_expected_dtype(value) for key, value in self.dtype().items()}
             raise AssertionError(
                 "Dataframe doesn't match schema\n"
-                f"Actual: {actual_dtypes}\nExpected: {self.dtype()}\nDirrerence: {diff}"
+                f"Actual: {actual}\nExpected: {expected}\nDirrerence: {diff}"
             )
 
         categoricals = (df[c] for c in df.columns if isinstance(df[c].dtype, CategoricalDtype))
@@ -168,8 +162,27 @@ class TypedDataFrame:
             [df, pd.DataFrame(columns=addon.keys()).astype(addon)], axis=1)
 
 
-def _normalize_dtype(dtype):
+def _normalize_actual_dtype(dtype):
     if isinstance(dtype, CategoricalDtype):
         return tuple(dtype.categories)
     else:
         return dtype
+
+
+_OBJECT_TYPES = {list, str, dict}
+
+
+def _normalize_expected_dtype(dtype):
+    try:
+        if dtype in _OBJECT_TYPES:
+            return object
+        else:
+            return dtype
+    except TypeError:
+        return dtype 
+
+
+def _dtypes_dismatch(actual, expected) -> bool:
+    actual = _normalize_actual_dtype(actual)
+    expected = _normalize_expected_dtype(expected)
+    return actual != expected
