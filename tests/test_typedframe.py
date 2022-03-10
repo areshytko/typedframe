@@ -177,20 +177,20 @@ def test_multiple_inheritance_1_failure():
 class Root(TypedDataFrame):
     
     schema = {
-    'root': bool
+        'root': bool
     }
 
 
 class Left(Root):
     schema = {
-    'left': bool
+        'left': bool
     }
 
 
 class Right(Root):
     schema = {
-    'root': object,
-    'right': bool
+        'root': object,
+        'right': bool
     }
 
 
