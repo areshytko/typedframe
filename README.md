@@ -91,3 +91,10 @@ Dirrerence: {('col1', <class 'numpy.float64'>), ('date', dtype('<M8[ns]'))}
 ```
 
 ## Releases
+
+### v0.6.1
+
+#### New Functionality
+- updated docstrings
+#### Breaking changes
+ 
