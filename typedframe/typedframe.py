@@ -67,13 +67,13 @@ class TypedDataFrame:
         >>> from typedframe import TypedDataFrame, DATE_TIME_DTYPE
         >>> class MyTable(TypedDataFrame):
         ...    schema = {
-        ...        "col1": object, # str
-        ...        "col2": np.int32,
-        ...        "col3": ('foo', 'bar')
+        ...       "col1": str,
+        ...       "col2": np.int32,
+        ...       "col3": ('foo', 'bar')
         ...    }
         ...    optional = {
-        ...        "col4": bool,
-                "col5": DATE_TIME_DTYPE
+        ...       "col4": bool,
+        ...       "col5": DATE_TIME_DTYPE
         ...    }
 
         >>> df = pd.DataFrame({"col1": ['foo'], "col2": np.array([1], dtype=np.int32), "col3": ['bar']})
