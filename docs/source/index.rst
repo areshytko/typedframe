@@ -287,6 +287,16 @@ optional column (or all of them) is missing no validation error will be
 raised. Besides that all columns from optional schema that are missing
 in a dataframe will be added with NaN values.
 
+.. code:: python
+
+   class DataFrameWithOptional(TypedDataFrame):
+       schema = {
+           'required': bool
+       }
+       optional = {
+           'optional': bool
+       }
+
 Convert Method
 ^^^^^^^^^^^^^^
 
