@@ -176,14 +176,17 @@ DataFrame in it by passing it to your Typed DataFrame constructor. The
 constructor will do a runtime schema validation and the original
 dataframe can be accessed through ``df`` attribute of a wrapper.
 
-This wrapper serves 2 purposes: - Formal explicit documentation about
-dataframe assumptions. You can use your Typed DataFrame schema
-definition as a form of documentation to communicate your data
-interfaces to others. This works very well especially in combination
-with Python type hints. - Runtime schema validation. In case of any data
-contracts violation you’ll get an exception explaining the exact reason.
-If you guard your pipeline with such Typed DataFrames you’ll be able to
-catch errors early - closer to the root causes.
+This wrapper serves 2 purposes:
+
+- Formal explicit documentation about dataframe assumptions.
+  You can use your Typed DataFrame schema definition as a form
+  of documentation to communicate your data interfaces to others.
+  This works very well especially in combination with Python type hints.
+
+- Runtime schema validation. In case of any data contracts violation
+  you’ll get an exception explaining the exact reason. If you guard
+  your pipeline with such Typed DataFrames you’ll be able to catch
+  errors early - closer to the root causes.
 
 Features
 ~~~~~~~~
