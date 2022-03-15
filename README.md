@@ -92,6 +92,25 @@ Expected: {'col1': <class 'numpy.float64'>, 'date': dtype('<M8[ns]'), 'comment':
 Dirrerence: {('col1', <class 'numpy.float64'>), ('date', dtype('<M8[ns]'))}
 ```
 
+## Supported versions
+
+Tested on the following versions:
+
+Python: 3.9
+
+numpy: 1.20, 1.21, 1.22
+
+pandas: 1.2, 1.3, 1.4
+
+### Manually test in your environment
+
+```python
+git clone git@github.com:areshytko/typedframe.git
+cd typedframe
+pip install -r requirements.txt
+pytest
+```
+
 ## Releases
 
 ### v0.6.1
