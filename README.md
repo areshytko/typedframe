@@ -2,6 +2,8 @@
 
 **Typed wrappers over pandas DataFrames with schema validation.**
 
+[![Tests](https://github.com/areshytko/typedframe/actions/workflows/ci-test.yaml/badge.svg?event=push)](https://github.com/areshytko/typedframe/actions/workflows/ci-test.yaml)
+
 `TypedDataFrame` is a lightweight wrapper over pandas `DataFrame` that provides runtime schema validation and can be used to establish strong data contracts between interfaces in your Python code.
 
 The goal of the library is to reveal and make explicit all unclear or forgotten assumptions about your DataFrame.
