@@ -1,4 +1,9 @@
-# 🐍 typedframe
+
+![logo](./docs/source/logo-2.svg)
+
+---
+
+# typedframe
 
 **Typed wrappers over pandas DataFrames with schema validation.**
 
