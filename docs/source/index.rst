@@ -427,7 +427,7 @@ Similar Projects
    pandas DataFrame.
 
 -  `Marshmallow <https://marshmallow.readthedocs.io/>`__. A library for
-   Python objects setialziation and deserialization with schema
+   Python objects serialization and deserialization with schema
    validation. It’s not integrated with pandas or numpy and focuses only
    on Python classes and builtin objects.
 
