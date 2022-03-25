@@ -1,5 +1,5 @@
 
-![logo](./docs/source/logo-2.svg)
+![logo](./docs/source/logo-2-dark.svg#gh-dark-mode-only)![logo](./docs/source/logo-2.svg#gh-light-mode-only)
 
 ---
 
