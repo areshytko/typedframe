@@ -116,7 +116,7 @@ dataframe as input we’ve got the following error:
    AssertionError: Dataframe doesn't match schema
    Actual: {'col1': dtype('int64'), 'comment': dtype('O')}
    Expected: {'col1': <class 'numpy.float64'>, 'date': dtype('<M8[ns]'), 'comment': <class 'object'>}
-   Dirrerence: {('col1', <class 'numpy.float64'>), ('date', dtype('<M8[ns]'))}
+   Difference: {('col1', <class 'numpy.float64'>), ('date', dtype('<M8[ns]'))}
 
 Problems with pandas DataFrame
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

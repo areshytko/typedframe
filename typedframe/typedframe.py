@@ -150,7 +150,7 @@ class TypedDataFrame:
             expected = {key: _normalize_expected_dtype(value) for key, value in self.dtype().items()}
             raise AssertionError(
                 "Dataframe doesn't match schema\n"
-                f"Actual: {actual}\nExpected: {expected}\nDirrerence: {diff}"
+                f"Actual: {actual}\nExpected: {expected}\nDifference: {diff}"
             )
 
         categoricals = (df[c] for c in df.columns if isinstance(df[c].dtype, CategoricalDtype))
