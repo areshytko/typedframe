@@ -144,24 +144,33 @@ def test_convert_categorical_failure():
         _ = CategoricalFrame.convert(df)
 
 
+def test_categorical_with_nans_failure():
+    df = pd.DataFrame({'col': ['foo', 'buzz']})
+    df.col = pd.Categorical(df.col, categories=CategoricalFrame.schema['col'], ordered=True)
+    with pytest.raises(AssertionError):
+        _ = CategoricalFrame(df)
+
+
 class PingInterface(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def ping(self):
         pass
 
+
 class Parent(TypedDataFrame):
     schema = {
-    'foo': bool
+        'foo': bool
     }
+
 
 class Child(Parent, PingInterface):
     
-    schema={
-    'bar': bool
+    schema = {
+        'bar': bool
     }
 
-    def ping():
+    def ping(self):
         print("ping")
 
 

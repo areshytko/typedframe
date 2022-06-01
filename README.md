@@ -118,6 +118,13 @@ pytest
 
 ## Releases
 
+### v0.7.0
+#### New Functionality
+- NaNs in categoricals are not allowed and cause an assertion.
+  Motivation: Explicit use of pd.Categorical(df.col, categories=[MyTypedFrame.schema['col']]) conversion can
+  introduce such NaNs and bypass the type check. 
+  See the [pd.Categorical documentation](https://pandas.pydata.org/docs/reference/api/pandas.Categorical.html).
+
 ### v0.6.1
 
 #### New Functionality

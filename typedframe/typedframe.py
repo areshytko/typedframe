@@ -153,9 +153,12 @@ class TypedDataFrame:
                 f"Actual: {actual}\nExpected: {expected}\nDifference: {diff}"
             )
 
-        categoricals = (df[c] for c in df.columns if isinstance(df[c].dtype, CategoricalDtype))
-        msg = "Categoricals must have str categories"
-        assert all(object == c.values.categories.dtype for c in categoricals), msg
+        categoricals = [df[c] for c in df.columns if isinstance(df[c].dtype, CategoricalDtype)]
+        for col in categoricals:
+            if object != col.values.categories.dtype:
+                raise AssertionError("Categoricals must have str categories")
+            if np.nan in col.unique():
+                raise AssertionError("Categoricals must not have NaNs")
 
         addon = {col: dtype for col, dtype in self.dtype().items() if col not in df.columns}
         self.df: pd.DataFrame = df if len(addon) == 0 else pd.concat(
