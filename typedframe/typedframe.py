@@ -98,7 +98,7 @@ class TypedDataFrame:
                     df[col] = pd.to_datetime(df[col], utc=True)
                 else:
                     df[col] = df[col].astype(expected[col])
-
+        
         if cls.index_schema[1]:
             df.index = df.index.astype(cls.index_schema[1])
             df.index.name = cls.index_schema[0]
@@ -137,7 +137,7 @@ class TypedDataFrame:
                     diff.add((col, dtype))
             except TypeError:
                 diff.add((col, dtype))
-
+        
         if self.index_schema[1]:
             if df.index.name != self.index_schema[0]:
                 diff.add(f"expected index name {self.index_schema[0]}, actual index name {df.index.name}")
@@ -184,7 +184,7 @@ def _normalize_expected_dtype(dtype):
         else:
             return dtype
     except TypeError:
-        return dtype
+        return dtype 
 
 
 def _dtypes_dismatch(actual, expected) -> bool:
