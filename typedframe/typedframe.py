@@ -2,6 +2,7 @@
 Basic classes for typed wrappers over pandas dataframes
 """
 from itertools import chain
+from typing import Type, TypeVar
 import pytz
 
 import numpy as np
@@ -18,6 +19,7 @@ dtype for datetime column
 DATE_TIME_DTYPE = np.dtype('datetime64[ns]')
 UTC_DATE_TIME_DTYPE = pd.DatetimeTZDtype('ns', pytz.UTC)
 
+T = TypeVar("T", bound="TypedDataFrame")
 
 class TypedDataFrame:
     """
@@ -57,7 +59,7 @@ class TypedDataFrame:
     optional = {}
 
     @classmethod
-    def convert(cls, df: pd.DataFrame) -> 'TypedDataFrame':
+    def convert(cls: Type[T], df: pd.DataFrame) -> T:
         """
         Tries to convert a given dataframe and wrap in a typed dataframe.
 
