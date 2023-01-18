@@ -1,3 +1,4 @@
-from typedframe.typedframe import TypedDataFrame, DATE_TIME_DTYPE, UTC_DATE_TIME_DTYPE
 
-__version__ = '0.7.1'
+from typedframe.pandas_typedframe import PandasTypedDataFrame as TypedDataFrame
+
+__version__ = '0.8.0'
