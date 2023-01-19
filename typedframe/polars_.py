@@ -36,3 +36,4 @@ class PolarsTypedFrame(TypedDataFrameBase):
             raise AssertionError(f"Input argument of type {type(df)} is not an instance of polars DataFrame")
 
         super().__init__(df)
+        self.df = df
