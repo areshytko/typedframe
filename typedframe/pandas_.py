@@ -18,7 +18,7 @@ dtype for datetime column
 DATE_TIME_DTYPE = np.dtype('datetime64[ns]')
 UTC_DATE_TIME_DTYPE = pd.DatetimeTZDtype('ns', pytz.UTC)
 
-T = TypeVar("T", bound="PandasTypedDataFrame")
+T = TypeVar("T", bound="PandasTypedFrame")
 
 _OBJECT_TYPES = {list, str, dict}
 
