@@ -7,8 +7,8 @@ README = (HERE / "README.md").read_text()
 
 setup(
     name="typedframe",
-    version='0.8.0',
-    description="Typed Wrappers over Pandas DataFrames with schema validation",
+    version='0.9.0',
+    description="Typed Wrappers over Pandas and Polars DataFrames with schema validation",
     long_description=README,
     long_description_content_type="text/markdown",
     url="https://github.com/areshytko/typedframe",
@@ -22,9 +22,11 @@ setup(
     ],
     packages=["typedframe"],
     install_requires=[
-        "numpy",
-        "pandas"
     ],
+    extras_require={
+        "pandas": ["pandas", "numpy"],
+        "polars": ["polars", "pyarrow"],
+    },
     setup_requires=['pytest-runner'],
     tests_require=['pytest']
 )

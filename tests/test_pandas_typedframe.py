@@ -1,14 +1,12 @@
 
 import abc
 import datetime
-from typedframe.pandas_typedframe import UTC_DATE_TIME_DTYPE, DATE_TIME_DTYPE
 
 import pandas as pd
 import numpy as np
-
 import pytest
 
-from typedframe.pandas_typedframe import PandasTypedDataFrame as TypedDataFrame
+from typedframe.pandas_ import UTC_DATE_TIME_DTYPE, DATE_TIME_DTYPE, PandasTypedFrame as TypedDataFrame
 
 
 class MyDataFrame(TypedDataFrame):

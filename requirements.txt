@@ -1,3 +1,5 @@
 numpy
 pandas
+polars
+pyarrow
 pytest==6.2.4

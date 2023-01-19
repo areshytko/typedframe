@@ -1,4 +1,5 @@
 
-from typedframe.pandas_typedframe import PandasTypedDataFrame as TypedDataFrame
+from typedframe.pandas_ import PandasTypedFrame as TypedDataFrame
+from typedframe.polars_ import PolarsTypedFrame
 
-__version__ = '0.8.0'
+__version__ = '0.9.0'
