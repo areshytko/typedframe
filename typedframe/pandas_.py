@@ -18,12 +18,12 @@ dtype for datetime column
 DATE_TIME_DTYPE = np.dtype('datetime64[ns]')
 UTC_DATE_TIME_DTYPE = pd.DatetimeTZDtype('ns', pytz.UTC)
 
-T = TypeVar("T", bound="PandasTypedDataFrame")
+T = TypeVar("T", bound="PandasTypedFrame")
 
 _OBJECT_TYPES = {list, str, dict}
 
 
-class PandasTypedDataFrame(TypedDataFrameBase):
+class PandasTypedFrame(TypedDataFrameBase):
     """
     Wrapper class over pandas
     """
@@ -38,8 +38,8 @@ class PandasTypedDataFrame(TypedDataFrameBase):
                 Examples
                 --------
 
-                >>> from typedframe import TypedDataFrame, DATE_TIME_DTYPE
-                >>> class MyTable(TypedDataFrame):
+                >>> from typedframe.pandas_ import PandasTypedFrame, DATE_TIME_DTYPE
+                >>> class MyTable(PandasTypedFrame):
                 ...    schema = {
                 ...       "col1": str,
                 ...       "col2": np.int32,
@@ -99,10 +99,11 @@ class PandasTypedDataFrame(TypedDataFrameBase):
             return dtype
 
     def __init__(self, df: pd.DataFrame):
-        super().__init__(df)
 
         if not isinstance(df, pd.DataFrame):
             raise AssertionError(f"Input argument of type {type(df)} is not an instance of pandas DataFrame")
+
+        super().__init__(df)
 
         if self.index_schema[1]:
             if df.index.name != self.index_schema[0]:

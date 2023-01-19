@@ -5,8 +5,6 @@ from abc import abstractmethod
 from itertools import chain
 from typing import Type, TypeVar, Any
 
-import pandas as pd
-
 
 T = TypeVar("T", bound="TypedDataFrameBase")
 
@@ -29,7 +27,7 @@ class TypedDataFrameBase:
 
     @classmethod
     @abstractmethod
-    def convert(cls: Type[T], df: pd.DataFrame) -> T:
+    def convert(cls: Type[T], df) -> T:
         pass
 
     @classmethod
@@ -42,7 +40,7 @@ class TypedDataFrameBase:
                             for cls in cls.__mro__[:-1] if hasattr(cls, 'schema'))))
 
     @classmethod
-    def _extract_actual_dtypes(cls: Type[T], df: pd.DataFrame) -> dict:
+    def _extract_actual_dtypes(cls: Type[T], df) -> dict:
         return cls._extract_actual_dtypes(df)
 
     @classmethod
@@ -61,10 +59,7 @@ class TypedDataFrameBase:
         expected = cls._normalize_expected_dtype(expected)
         return actual != expected
 
-    def __init__(self, df: pd.DataFrame):
-
-        if not isinstance(df, pd.DataFrame):
-            raise AssertionError(f"Input argument of type {type(df)} is not an instance of pandas DataFrame")
+    def __init__(self, df):
 
         actual_dtypes = self._extract_actual_dtypes(df)
         expected = self.dtype(with_optional=False).items()
@@ -86,7 +81,7 @@ class TypedDataFrameBase:
                 diff.add((col, dtype))
 
         if diff:
-            actual = {key: self._normalize_actual_dtype(value) for key, value in df.dtypes.to_dict().items()}
+            actual = {key: self._normalize_actual_dtype(value) for key, value in actual_dtypes.items()}
             expected = {key: self._normalize_expected_dtype(value) for key, value in self.dtype().items()}
             raise AssertionError(
                 "Dataframe doesn't match schema\n"
