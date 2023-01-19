@@ -29,6 +29,15 @@ class ChildDataFrame(ParentDataFrame, MixinDataFrame):
     }
 
 
+class OptionalDataFrame(TypedDataFrame):
+    schema = {
+        'required': pl.Boolean
+    }
+    optional = {
+        'optional': pl.Boolean
+    }
+
+
 def test_base_success_case():
     df = pl.DataFrame({'int_field': [1, 2, 3],
                        'float_field': [1.0, 2.0, 3.0],
@@ -71,3 +80,21 @@ def test_convert_error_case():
                        'str_field': ['a', 'b', 'c']})
     with pytest.raises(AssertionError):
         _ = ParentDataFrame.convert(df)
+
+
+def test_optional_success_case():
+    df = pl.DataFrame({'required': [True, False, True]})
+    _ = OptionalDataFrame(df)
+
+
+def test_optional_success_case_2():
+    df = pl.DataFrame({'required': [True, False, True],
+                       'optional': [True, False, True]})
+    _ = OptionalDataFrame(df)
+
+
+def test_optional_error_case():
+    df = pl.DataFrame({'required': [True, False, True],
+                       'optional': [2, 3, 1]})
+    with pytest.raises(AssertionError):
+        _ = OptionalDataFrame(df)
