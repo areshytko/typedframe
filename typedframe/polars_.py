@@ -11,10 +11,18 @@ T = TypeVar("T", bound="PolarsTypedFrame")
 class PolarsTypedFrame(TypedDataFrameBase):
 
     @classmethod
-    def convert(cls: Type["T"], df: pl.DataFrame) -> T:
+    def convert(cls: Type["T"], df: pl.DataFrame, add_optional_cols: bool = True) -> T:
+
+        addon = {}
+        if add_optional_cols:
+            required = cls.dtype(with_optional=False)
+            addon = {col: dtype for col, dtype in cls.dtype().items() if col not in df.columns and col not in required}
+
         expected = cls.dtype()
         df = df.with_columns([
             pl.col(col).cast(expected[col]) for col in df.columns if col in expected
+        ] + [
+            pl.lit(None, dtype=dtype).alias(col) for col, dtype in addon.items()
         ])
         return cls(df)
 

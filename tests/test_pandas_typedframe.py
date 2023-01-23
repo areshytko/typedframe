@@ -106,6 +106,7 @@ class CategoricalFrame(TypedDataFrame):
         'col': ('foo', 'bar')
     }
 
+
 def test_categorical_success_1():
     df = pd.DataFrame({'col': ['foo', 'foo', 'bar']})
     df.col = pd.Categorical(df.col, categories=('foo', 'bar'), ordered=True)
@@ -134,6 +135,12 @@ def test_categorical_failure_3():
 def test_convert_categorical():
     df = pd.DataFrame({'col': ['foo', 'foo']})
     _ = CategoricalFrame.convert(df)
+
+
+def test_convert_optional():
+    df = pd.DataFrame({'required': [True]})
+    data = DataFrameWithOptional.convert(df, add_optional_cols=True)
+    assert all(col in data.df.columns for col in DataFrameWithOptional.dtype().keys())
 
 
 def test_convert_categorical_failure():

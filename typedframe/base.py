@@ -27,7 +27,7 @@ class TypedDataFrameBase:
 
     @classmethod
     @abstractmethod
-    def convert(cls: Type[T], df) -> T:
+    def convert(cls: Type[T], df, add_optional_cols: bool = True) -> T:
         pass
 
     @classmethod

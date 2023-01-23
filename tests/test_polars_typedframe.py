@@ -98,3 +98,9 @@ def test_optional_error_case():
                        'optional': [2, 3, 1]})
     with pytest.raises(AssertionError):
         _ = OptionalDataFrame(df)
+
+
+def test_convert_optional():
+    df = pl.DataFrame({'required': [True]})
+    data = OptionalDataFrame.convert(df, add_optional_cols=True)
+    assert all(col in data.df.columns for col in OptionalDataFrame.dtype().keys())

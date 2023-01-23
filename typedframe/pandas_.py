@@ -31,30 +31,37 @@ class PandasTypedFrame(TypedDataFrameBase):
     index_schema = (None, None)  # (name, dtype)
 
     @classmethod
-    def convert(cls: Type[T], df: pd.DataFrame) -> T:
+    def convert(cls: Type[T], df: pd.DataFrame, add_optional_cols: bool = True) -> T:
         """
-                Tries to convert a given dataframe and wrap in a typed dataframe.
+        Tries to convert a given dataframe and wrap in a typed dataframe.
 
-                Examples
-                --------
+        Examples
+        --------
 
-                >>> from typedframe.pandas_ import PandasTypedFrame, DATE_TIME_DTYPE
-                >>> class MyTable(PandasTypedFrame):
-                ...    schema = {
-                ...       "col1": str,
-                ...       "col2": np.int32,
-                ...       "col3": ('foo', 'bar')
-                ...    }
-                ...    optional = {
-                ...       "col4": bool,
-                ...       "col5": DATE_TIME_DTYPE
-                ...    }
+        >>> from typedframe.pandas_ import PandasTypedFrame, DATE_TIME_DTYPE
+        >>> class MyTable(PandasTypedFrame):
+        ...    schema = {
+        ...       "col1": str,
+        ...       "col2": np.int32,
+        ...       "col3": ('foo', 'bar')
+        ...    }
+        ...    optional = {
+        ...       "col4": bool,
+        ...       "col5": DATE_TIME_DTYPE
+        ...    }
 
-                >>> df = pd.DataFrame({"col1": ['foo'], "col2": np.array([1], dtype=np.int32), "col3": ['bar']})
-                >>> df.col3 = pd.Categorical(df.col3, categories=('foo', 'bar'), ordered=True)
-                >>> print(MyTable.convert(df).df)
-                """
+        >>> df = pd.DataFrame({"col1": ['foo'], "col2": np.array([1], dtype=np.int32), "col3": ['bar']})
+        >>> df.col3 = pd.Categorical(df.col3, categories=('foo', 'bar'), ordered=True)
+        >>> print(MyTable.convert(df).df)
+        """
         df = df.copy()
+
+        if add_optional_cols:
+            required = cls.dtype(with_optional=False)
+            addon = {col: dtype for col, dtype in cls.dtype().items() if col not in df.columns and col not in required}
+            df: pd.DataFrame = df if len(addon) == 0 else pd.concat(
+                [df, pd.DataFrame(columns=addon.keys()).astype(addon)], axis=1)
+
         expected = cls.dtype()
         for col in df.columns:
             if col in expected:
@@ -121,6 +128,4 @@ class PandasTypedFrame(TypedDataFrameBase):
             if np.nan in col.unique():
                 raise AssertionError("Categoricals must not have NaNs")
 
-        addon = {col: dtype for col, dtype in self.dtype().items() if col not in df.columns}
-        self.df: pd.DataFrame = df if len(addon) == 0 else pd.concat(
-            [df, pd.DataFrame(columns=addon.keys()).astype(addon)], axis=1)
+        self.df = df
