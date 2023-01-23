@@ -7,7 +7,7 @@ README = (HERE / "README.md").read_text()
 
 setup(
     name="typedframe",
-    version='0.9.2',
+    version='0.10.0',
     description="Typed Wrappers over Pandas and Polars DataFrames with schema validation",
     long_description=README,
     long_description_content_type="text/markdown",

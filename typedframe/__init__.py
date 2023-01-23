@@ -13,4 +13,4 @@ except ImportError:
 else:
     from typedframe.polars_ import PolarsTypedFrame
 
-__version__ = '0.9.2'
+__version__ = '0.10.0'
