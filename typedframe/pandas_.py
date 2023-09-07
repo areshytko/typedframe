@@ -64,19 +64,22 @@ class PandasTypedFrame(TypedDataFrameBase):
 
         expected = cls.dtype()
         for col in df.columns:
-            if col in expected:
-                if isinstance(expected[col], tuple):
-                    actual_cats = set(df[col].unique())
-                    categories_diff = actual_cats.difference(set(expected[col]))
-                    if categories_diff:
-                        raise AssertionError(f"For column: {col} there are unknown categories: {categories_diff}")
-                    df[col] = pd.Categorical(df[col], categories=expected[col], ordered=True)
-                elif expected[col] == DATE_TIME_DTYPE:
-                    df[col] = pd.to_datetime(df[col])
-                elif expected[col] == UTC_DATE_TIME_DTYPE:
-                    df[col] = pd.to_datetime(df[col], utc=True)
-                else:
-                    df[col] = df[col].astype(expected[col])
+            try:
+                if col in expected:
+                    if isinstance(expected[col], tuple):
+                        actual_cats = set(df[col].unique())
+                        categories_diff = actual_cats.difference(set(expected[col]))
+                        if categories_diff:
+                            raise AssertionError(f"For column: {col} there are unknown categories: {categories_diff}")
+                        df[col] = pd.Categorical(df[col], categories=expected[col], ordered=True)
+                    elif expected[col] == DATE_TIME_DTYPE:
+                        df[col] = pd.to_datetime(df[col])
+                    elif expected[col] == UTC_DATE_TIME_DTYPE:
+                        df[col] = pd.to_datetime(df[col], utc=True)
+                    else:
+                        df[col] = df[col].astype(expected[col])
+            except Exception as e:
+                raise AssertionError(f"Failed to convert column: {col}") from e
 
         if cls.index_schema[1]:
             df.index = df.index.astype(cls.index_schema[1])
