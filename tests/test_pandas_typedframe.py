@@ -224,3 +224,23 @@ def test_multiple_inheritance_2_failure():
 def test_multiple_inheritance_2_failure_with_root_overwrite():
     with pytest.raises(AssertionError):
         _ = Down(pd.DataFrame({'root': [True], 'left': [True], 'right': ['string']}))
+
+
+class ListFrame(TypedDataFrame):
+    schema = {
+        'col1': list
+    }
+
+
+def test_convert_list_attribute_type():
+    _ = ListFrame.convert(pd.DataFrame({'col1': [["this"]]}))
+
+
+class DictFrame(TypedDataFrame):
+    schema = {
+        'col1': dict
+    }
+
+
+def test_convert_dict_attribute_type():
+    _ = DictFrame.convert(pd.DataFrame({'col1': [{"this": "that"}]}))
