@@ -72,6 +72,8 @@ class PandasTypedFrame(TypedDataFrameBase):
                         if categories_diff:
                             raise AssertionError(f"For column: {col} there are unknown categories: {categories_diff}")
                         df[col] = pd.Categorical(df[col], categories=expected[col], ordered=True)
+                    elif expected[col] in (list, dict):
+                        df[col] = expected[col](df[col])
                     elif expected[col] == DATE_TIME_DTYPE:
                         df[col] = pd.to_datetime(df[col])
                     elif expected[col] == UTC_DATE_TIME_DTYPE:

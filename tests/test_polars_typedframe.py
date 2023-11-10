@@ -47,7 +47,7 @@ def test_base_success_case():
                        'datetime_field': [datetime.datetime(2021, 5, 31, 12, 0, 0), datetime.datetime(2021, 6, 1, 12, 0, 0), datetime.datetime(2021, 6, 2, 12, 0, 0)],
                        'mixin_field': [1, 2, 3],
                        'new_field': [1, 2, 3]})
-    df = df.with_column(pl.col('int_field').cast(pl.Int16))
+    df = df.with_columns(pl.col('int_field').cast(pl.Int16))
     _ = ChildDataFrame(df)
 
 
